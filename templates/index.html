@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+		<script	src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+	</head>
+	<script>
+		$(document).ready(function(){
+			init();
+		});
+
+		function init()
+		{
+			$.ajax({
+				url: "/init",
+				type: 'GET',
+				async: true,
+				cache: false,
+				timeout: 30000,
+				error: function(){
+					console.log("ERROR")
+				},
+				success: function(msg){ 
+					update();
+				}
+   			});
+		}
+
+		function update()
+		{
+			$.ajax({
+				url: "/update",
+				type: 'GET',
+				async: true,
+				cache: false,
+				timeout: 30000,
+				error: function(){
+					console.log("ERROR")
+				},
+				success: function(data){ 
+					if(data.length !== 0)
+					{
+						console.log(data);
+						manageReceivedData(data);
+					}
+					update();
+				}
+   			});
+		}
+
+		function manageReceivedData(datas)
+		{
+			datas.forEach(data => {
+				if(data['type'] == "puppetData")
+				{
+					dataArray = JSON.parse(data['data']);
+					setData(dataArray);
+				}
+				else if(data['type'] == "message")
+				{
+					console.log(data['data']);
+				}
+			});
+		}
+	
+		function setData(puppetInfo)
+		{
+			$("#puppet-name").html(puppetInfo["puppet"]);
+			$("#puppet-image img").attr('src', 'static/puppetIcon/'+puppetInfo["puppet"]+'.png')
+			console.log(puppetInfo)
+			sn = 1;
+				styleName = puppetInfo['style']
+				weaknesses = puppetInfo['weaknesses']
+				
+				$("#style .table-styles tbody tr .style-name").html(styleName)
+				// Set Bg Color
+				$("#style .table-styles tbody tr .style-name").attr('class', 'style-name')
+				$("#style .table-styles tbody tr .style-name").addClass("bg-"+styleName);;
+				// Set Tables
+				for(type in weaknesses)
+				{
+					if(type != "note")
+					{
+						$("#style .table-styles tbody tr ."+type).html(weaknesses[type]);
+						bg = "white";
+						color = "black";
+						switch (weaknesses[type])
+						{
+							case "0x":
+							case "0x*":
+								bg = "#4b4b4b";
+								color = "white";
+								break;
+							case '0.5x':
+							case '0.5x*':
+								bg = "#ff4d4d";
+								color = "white";
+								break;
+							case '0.25x':
+							case '0.25x*':
+								bg = "#ff3838";
+								color = "white";
+								break;
+							case '2x':
+							case '2x*':
+								bg = "#78e08f";
+								color = "white";
+								break;
+							case '4x':
+							case '4x*':
+								bg = "#3ae374";
+								color = "white";
+								break;
+							default:
+								break;
+						}
+
+						$("#style .table-styles tbody tr ."+type).css("background-color", bg);
+						$("#style .table-styles tbody tr ."+type).css("color", color);
+					}
+					else
+					{
+						$("#style .note").html(weaknesses[type]);
+					}
+				}
+
+				sn++;
+			}
+	</script>
+	<style>
+		body
+		{
+			background-color: #3d3d3d;
+			color:white;
+			overflow: hidden;
+		}
+
+		.table-styles
+		{
+			text-align: center;
+			margin-bottom: 0;
+			margin-left: 10px;
+			font-size: 15px;
+			border-collapse: collapse;
+			border: #3d3d3d solid 1px;
+		}
+
+		.table-styles tbody tr td
+		{
+			background-color: white;
+		}
+
+		.type
+		{
+			width: 100px;
+		}
+
+		.styles
+		{
+			margin-top: 10px;
+		}
+
+		.style-name
+		{
+			vertical-align: middle;
+			width: 200px;
+			max-width: 150px;
+		}
+
+		.note
+		{
+			font-style: italic;
+			font-size: 12px;
+			position: absolute;
+			margin-left: 10px;
+		}
+
+		#puppet-name
+		{
+			text-align: center;
+			font-size: 23px;
+		}
+
+		#puppet-image
+		{
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.bg-Normal
+		{
+			color: white !important;
+			background-color: #F79F1F !important;
+		}
+
+		.bg-Power
+		{
+			color: white !important;
+			background-color: #EA2027 !important;
+		}
+
+		.bg-Defense
+		{
+			color: white !important;
+			background-color: #0984e3 !important;
+		}
+
+		.bg-Speed
+		{
+			color: white !important;
+			background-color: #4cd137 !important;
+		}
+		
+		.bg-Assist
+		{
+			color: white !important;
+			background-color: #e056fd !important;
+		}
+
+		.bg-Extra
+		{
+			color: white !important;
+			background-color: #6c5ce7 !important;
+		}
+
+		.middle-tr
+		{
+			border-top: #3d3d3d 5px solid !important;
+		}
+
+		#puppetImg
+		{
+			width: 13rem;
+		}
+
+		.main-left
+		{
+			display: flex;
+			align-items: center;
+			margin-top: -25px;
+		}
+
+		.main-right
+		{
+			margin-top: -10px;
+		}
+
+		.titleName 
+		{
+			justify-content: center !important;
+			text-align: center;
+		}
+
+		.Title
+		{
+			padding: 0;
+		}
+	</style>
+	<body>
+		<div class="navbar navbar-nav bg-dark Title">
+			<div class="container-fluid titleName">
+				<span style="color:white;" id="puppet-name">-</span>
+			</div>
+		</div>
+		<div class="main row">
+			<div class="main-left col-9">
+				<div class="table-style-list">
+					<div class="styles" id="style">
+						<table class="table table-sm table-bordered table-styles">
+							<tbody>
+								<tr>
+									<th class="style-name" rowspan="4">-</th>
+									<th class="type" style="background-color: #FFBBE6;color:white">Void</th>
+									<th class="type" style="background-color: #FF4949;color:white">Fire</th>
+									<th class="type" style="background-color: #6884FF;color:white">Water</th>
+									<th class="type" style="background-color: #57DC4D;color:white">Nature</th>
+									<th class="type" style="background-color: #C18458;color:white">Earth</th>
+									<th class="type" style="background-color: #A2A2A2;color:white">Steel</th>
+									<th class="type" style="background-color: #C1FF71;color:white">Wind</th>
+									<th class="type" style="background-color: #FF8D1E;color:white">Electric</th>
+								</tr>
+								<tr>
+									<td class="Void">1x</td>
+									<td class="Fire">1x</td>
+									<td class="Water">1x</td>
+									<td class="Nature">1x</td>
+									<td class="Earth">1x</td>
+									<td class="Steel">1x</td>
+									<td class="Wind">1x</td>
+									<td class="Electric">1x</td>
+								</tr>
+								<tr class="middle-tr">
+									<th class="type" style="background-color: #FEE85A;color:white">Light</th>
+									<th class="type" style="background-color: #585858;color:white">Dark</th>
+									<th class="type" style="background-color: #675173;color:white">Nether</th>
+									<th class="type" style="background-color: #AE66FF;color:white">Poison</th>
+									<th class="type" style="background-color: #FF6B22;color:white">Fighting</th>
+									<th class="type" style="background-color: #FF71E9;color:white">Illusion</th>
+									<th class="type" style="background-color: #FFB400;color:white">Sound</th>
+									<th class="type" style="background-color: #3A62C4;color:white">Warped</th>
+								</tr>
+								<tr>
+									<td class="Light">1x</td>
+									<td class="Dark">1x</td>
+									<td class="Nether">1x</td>
+									<td class="Poison">1x</td>
+									<td class="Fighting">1x</td>
+									<td class="Illusion">1x</td>
+									<td class="Sound">1x</td>
+									<td class="Warped">1x</td>
+								</tr>
+							</tbody>
+						</table>
+						<p class="note"></p>
+					</div>
+				</div>
+			</div>
+			<div class="main-right col-3">
+				<div id="puppet-image">
+					<img id="puppetImg" src="static/puppetIcon/None.png"/>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
