@@ -7040,7 +7040,7 @@
 			"Warped": "1x"
 		},
 		"Power": {
-			"note": "*Immunity only when using Absorbent. Otherwise, the modifier is 0.5x.",
+			"note": "",
 			"Void": "0.5x",
 			"Fire": "0.5x",
 			"Water": "2x",

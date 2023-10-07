@@ -14,7 +14,6 @@ class BattleData:
 	enemyPuppetName = None
 	enemyPuppetStyleId = None
 
-
 	def __init__(self):
 		# Load Puppet Data
 		with open("puppetData.json", 'r') as f:
@@ -24,22 +23,22 @@ class BattleData:
 			self.puppetList = json.load(f)
 
 		# We load the possibles games executable
-		with open("gamesAdresses.json", 'r', encoding = "utf_8") as f:
-			gamesAdresses = json.load(f)
+		with open("gamesNames.json", 'r', encoding = "utf_8") as f:
+			gamesNames = json.load(f)
 
 		loaded = False
-		for game in gamesAdresses:
+		for game in gamesNames:
 			if not loaded:
-				# We try to load the game with the Extended Mod (English Ver.)
 				try:
-					self.pm = pymem.Pymem(game["PROCESS_NAME"])
-					self.playerPuppetId = int(game["PLAYER_PUPPET_ID"], base=16)
-					self.playerPuppetName = int(game["PLAYER_PUPPET_NAME"], base=16)
-					self.playerPuppetStyleId = int(game["PLAYER_STYLE_ID"], base=16)
-					self.enemyTrainer = int(game["ENEMY_TRAINER"], base=16)
-					self.enemyPuppetId = int(game["ENEMY_PUPPET_ID"], base=16)
-					self.enemyPuppetName = int(game["ENEMY_PUPPET_NAME"], base=16)
-					self.enemyPuppetStyleId = int(game["ENEMY_STYLE_ID"], base=16)
+					self.pm = pymem.Pymem(game)
+
+					self.playerPuppetId = self.pm.base_address+0x00C59F6D
+					self.playerPuppetName = self.pm.base_address+0x00C59F71
+					self.playerPuppetStyleId = self.pm.base_address+0x00C59F6F
+					self.enemyTrainer = self.pm.base_address+0x00C5A104
+					self.enemyPuppetId = self.pm.base_address+0x00C5A510
+					self.enemyPuppetName = self.pm.base_address+0x00C5A514
+					self.enemyPuppetStyleId = self.pm.base_address+0x00C5A512
 					loaded = True
 					break
 				except:

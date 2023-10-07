@@ -36,5 +36,5 @@ def update():
 	return datas
 
 if __name__ == "__main__":
-	webview.create_window('TPDPC', app, width=950, height=225, frameless=True)
+	webview.create_window('TPDP-MBI', app, width=950, height=225, frameless=True)
 	webview.start(gui='qt')
