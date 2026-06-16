@@ -30,8 +30,12 @@ def update():
 	time.sleep(1)
 
 	if tpdp.getEnemyPuppetId() > 0:
-		data = {"puppet": tpdp.getEnemyPuppet(), "style": tpdp.getEnemyPuppetStyle(), "weaknesses": tpdp.getEnemyTableWeaknesses()}
-		datas.append({"type": "puppetData", "data": json.dumps(data)})
+		try:
+			data = {"puppet": tpdp.getEnemyPuppet(), "style": tpdp.getEnemyPuppetStyle(), "weaknesses": tpdp.getEnemyTableWeaknesses()}
+			datas.append({"type": "puppetData", "data": json.dumps(data)})
+		except:
+			print(f"Unknown Puppet: {tpdp.getEnemyPuppetId()}")
+			pass
 
 	return datas
 
